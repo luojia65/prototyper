@@ -45,9 +45,6 @@ extern "C" fn rust_main(_hart_id: usize, opaque: usize, nonstandard_a2: usize) {
     };
 
     if is_boot_hart {
-        let (mpp, next_addr) =
-            dynamic::mpp_next_addr(&info).unwrap_or_else(fail::invalid_dynamic_data);
-
         // parse the device tree
 
         // 1. Init FDT
@@ -128,6 +125,9 @@ extern "C" fn rust_main(_hart_id: usize, opaque: usize, nonstandard_a2: usize) {
         trap_stack::prepare_for_trap();
 
         // 设置内核入口
+        let (mpp, next_addr) =
+            dynamic::mpp_next_addr(&info).unwrap_or_else(fail::invalid_dynamic_data);
+
         local_remote_hsm().start(NextStage {
             start_addr: next_addr,
             next_mode: mpp,
